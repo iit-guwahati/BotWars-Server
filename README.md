@@ -12,8 +12,8 @@ Instructions
 
 - Compile `runner.c` using the following command :-
 
-    `$ gcc -Wall runner.c`
+    `$ gcc -Wall runner.c -o runner`
 
 - Start the server on port 8000 using the following command    
 
-    `$ python main.py 8000`
+    `$ python BotWarsServer.py 8000`
