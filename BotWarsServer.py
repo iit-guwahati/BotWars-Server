@@ -2,11 +2,19 @@ from BotWarsHandler import *
 import sys
 
 
-HOST_NAME   = 'localhost'
-PORT_NUMBER = int(sys.argv[1])
-TEMP_DIR    = "/tmp/BOTWARS_TMP"
+
+def usage():
+  print "Usage : python BotWarsServer.py <port_number>"
+
 
 if __name__=='__main__':
+  try:
+    HOST_NAME   = 'localhost'
+    PORT_NUMBER = int(sys.argv[1])
+    TEMP_DIR    = "/tmp/BOTWARS_TMP"
+  except Exception:
+    usage()
+    exit(0)
   
   httpd = HTTPServer((HOST_NAME, PORT_NUMBER), BotwarsHandler)
   print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
