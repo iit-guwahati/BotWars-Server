@@ -1,90 +1,77 @@
 #!/usr/bin/python
 import subprocess
-import string
 
 def init():
 	compilec = ['/usr/bin/gcc', 'runner.c', '-o', 'runner','-lm']
 	subprocess.call(compilec)
-	
-def com(filename,cerrfile,inputfile,outputfile,memlimit,timelimit):
-	#print "Will compile " + filename
-	#filename=raw_input("File name please\n")
-	dotpos = filename.find(".")
-	language=filename[dotpos+1:]
-	if ( language == 'c' ):
-		compilec = ['/usr/bin/gcc','-lm', filename]
-		try:
-			warnerr = open(cerrfile,'w')
-			subprocess.call(compilec,stderr=warnerr)
-			warnerr.close()
-		except Exception as e:
-			print e
-			pass
-			
-			
-	elif ( language == 'py' ):
-		try:
-			subprocess.call(['chmod','a+x',filename])
-			runc = ['./runner', filename, '--input='+inputfile, '--output='+outputfile, '--mem='+memlimit, '--time='+timelimit]
-			fo = open(cerrfile,'w')
-			subprocess.call(runc,stderr=fo)
-			fo.close()
-		except Exception as e:
-			print e
-			pass
-	
-	
-	
-	elif ( language == 'cpp' ):
-		compilecpp = ['/usr/bin/g++', filename]
-		try:
-			foo = open(cerrfile,'w')
-			subprocess.call(compilecpp,stderr=foo)
-			foo.close()
-		except Exception as e:
-			print e
-			pass
-	
-	with open(cerrfile, 'r') as cerr_file:
-    		cerr = cerr_file.read()
-	return cerr
-	
-	
-	
-def run(filename,runerrfile,inputfile,outputfile,memlimit,timelimit):
-	dotpos = filename.find(".")
-	language=filename[dotpos+1:]
-	fo = open(runerrfile,'w')
 
+def compilerun(filename,errfile,inputfile,outputfile,memlimit,timelimit):
+	dotpos = filename.find(".")
+	language=filename[dotpos+1:]
+	compileerror=False
+	fo = open(errfile,'w')
 	if ( language == 'c' ):
 		try:
-			runc = ['./runner', 'a.out', '--input='+inputfile, '--output='+outputfile, '--mem='+memlimit, '--time='+timelimit]
-			subprocess.call(runc,stderr=fo)
+			compilec = ['/usr/bin/gcc','-lm', '-W', filename]
+			subprocess.call(compilec,stderr=fo)
+			
+			with open(errfile, 'r') as error_file:
+				error = error_file.read()
+			if not error:
+				print "Compiled " + filename + " successfully"
+				runc = ['./runner', 'a.out', '--input='+inputfile, '--output='+outputfile, '--mem='+memlimit, '--time='+timelimit]
+				subprocess.call(runc,stderr=fo)
+			else:
+				compileerror=True
+			
 		except Exception as e:
 			print e
 			pass
 	
-	elif ( language == 'cpp' ):
+	elif (language == 'cpp'):
 		try:
-			runcpp = ['./runner', 'a.out', '--input='+inputfile, '--output='+outputfile, '--mem='+memlimit, '--time='+timelimit]
-			subprocess.call(runcpp)
+			compilecpp = ['/usr/bin/g++','-lm','-w', filename]
+			subprocess.call(compilecpp,stderr=fo)
+			with open(errfile, 'r') as error_file:
+				error = error_file.read()
+			if not error:
+				print "Compiled " + filename + " successfully"
+				runcpp = ['./runner', 'a.out', '--input='+inputfile, '--output='+outputfile, '--mem='+memlimit, '--time='+timelimit]
+				subprocess.call(runcpp)
+			else:
+				compileerror=True
 		except Exception as e:
 			print e
 			pass
-	elif (language == 'py'):
-		return
 			
-	if(language == 'c' or language =='cpp'):
-		with open(runerrfile, 'r') as error_file:
-    			error = error_file.read()
+	elif (language == 'py'):
+		try:
+			#the py file has to have this line at the top: #!/usr/bin/python
+			subprocess.call(['chmod','a+x',filename])
+			runpy = ['./runner', filename, '--input='+inputfile, '--output='+outputfile, '--mem='+memlimit, '--time='+timelimit]
+			
+			subprocess.call(runpy,stderr=fo)
+			
+		except Exception as e:
+			print e
+			pass
+			
+	fo.close()
+	with open(errfile, 'r') as error_file:
+		if compileerror==False:
+			error = error_file.read()
+		else:
+			error='CERR	'+error_file.read()
+			#print error
 		
-	with open(outfile, 'r') as output_file:
+	with open(outputfile, 'r') as output_file:
 		output = output_file.read()
+	
+	#print output
 	return error,output
 		
 
 init()
-com("hello.py","cerrfile.txt","input.txt","output.txt","200000000","2.0")
-run("hello.py","runerr.txt","input.txt","output.txt","200000000","2.0")
+compilerun("hello.py","err.txt","input.txt","output.txt","200000000","2.0")
 			
 
