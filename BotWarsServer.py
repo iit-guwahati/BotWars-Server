@@ -1,7 +1,8 @@
 from BotWarsHandler import *
+import sys
 
 
-HOST_NAME   = '192.168.1.2'
+HOST_NAME   = 'localhost'
 PORT_NUMBER = int(sys.argv[1])
 TEMP_DIR    = "/tmp/BOTWARS_TMP"
 
