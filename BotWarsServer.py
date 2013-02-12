@@ -1,7 +1,6 @@
 from BotWarsHandler import *
 import sys
-
-
+import logging
 
 def usage():
   print "Usage : python BotWarsServer.py <port_number>"
@@ -16,7 +15,10 @@ if __name__=='__main__':
     exit(0)
   
   httpd = HTTPServer((HOST_NAME, PORT_NUMBER), BotwarsHandler)
-  print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
+  logging.basicConfig(filename="BotWars.log", level=logging.DEBUG,
+                      format='%(asctime)s [%(levelname)s] [%(module)s.%(funcName)s] :: %(message)s',
+                      datefmt='%m/%d/%Y %H:%M:%S')
+  logging.info("Server started on port %s", PORT_NUMBER)
   print "Server running. Use Ctrl+c to stop the server."
   try:
     httpd.serve_forever()

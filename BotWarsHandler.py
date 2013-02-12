@@ -1,10 +1,10 @@
 import time, json, urlparse, os
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from base64 import b64decode
+import logging
 
 TEMP_DIR = "/tmp/BOTWARS_TMP"  
 class BotwarsHandler (BaseHTTPRequestHandler):
-  
 #  self._evaluator
   def do_HEAD(self):
     self.send_response(200)
@@ -14,6 +14,7 @@ class BotwarsHandler (BaseHTTPRequestHandler):
   def do_POST(self):
     ''' Respond to POST request.'''
     # Extract and print the contents of the POST
+    logging.debug('Received post request')
     recvTime  = int(time.time())
     self.do_HEAD()
     length    = int(self.headers['Content-Length'])
@@ -23,6 +24,11 @@ class BotwarsHandler (BaseHTTPRequestHandler):
     problemNo = post_data['problemnumber'][0]
     filename  = post_data['filename'][0]
     filedata  = b64decode(post_data['filedata'][0])
+    logging.debug('Post request details :\t' + 
+                  'teamname  = %s ;;' + 
+                  'teampass  = %s ;;' +
+                  'problemNo = %s ;;' + 
+                  'filename  = %s ;;', teamname, teampass, problemNo, filename)
 
     # TODO : Add authentication part
 
