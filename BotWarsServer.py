@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# Author : Rajat Khanduja <rajatkhanduja13@gmail.com>
+
 from BotWarsHandler import *
 import sys
 import logging

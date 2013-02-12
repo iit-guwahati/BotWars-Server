@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# Author : Rajat Khanduja <rajatkhanduja13@gmail.com>
+
 import time, json, urlparse, os
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from base64 import b64decode
