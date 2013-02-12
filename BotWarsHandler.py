@@ -1,7 +1,8 @@
-import time, json, urlparse
+import time, json, urlparse, os
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from base64 import b64decode
 
+TEMP_DIR = "/tmp/BOTWARS_TMP"  
 class BotwarsHandler (BaseHTTPRequestHandler):
   
 #  self._evaluator
@@ -26,7 +27,7 @@ class BotwarsHandler (BaseHTTPRequestHandler):
     # TODO : Add authentication part
 
     # Check if the folder for the user exists
-    folder = os.path.join(TEMP_DIR, teamname, problemno)
+    folder = os.path.join(TEMP_DIR, teamname, problemNo)
     if not os.path.exists(folder):
       os.makedirs(folder)
     # Create filename using the folder information

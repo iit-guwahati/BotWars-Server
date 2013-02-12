@@ -11,7 +11,6 @@ if __name__=='__main__':
   try:
     HOST_NAME   = 'localhost'
     PORT_NUMBER = int(sys.argv[1])
-    TEMP_DIR    = "/tmp/BOTWARS_TMP"
   except Exception:
     usage()
     exit(0)
