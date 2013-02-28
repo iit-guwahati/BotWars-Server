@@ -5,8 +5,14 @@ import time, json, urlparse, os
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from base64 import b64decode
 import logging
+from judge import judge, NoSuchProblemException
 
 TEMP_DIR = "/tmp/BOTWARS_TMP"  
+
+# Return strings
+INVALID_PROBLEM  = "Invalid Problem number"
+FILEDATA_MISSING = "Error receiving file content. Please check if you are choosing the correct file." 
+
 class BotwarsHandler (BaseHTTPRequestHandler):
 #  self._evaluator
   def do_HEAD(self):
@@ -19,14 +25,22 @@ class BotwarsHandler (BaseHTTPRequestHandler):
     # Extract and print the contents of the POST
     logging.debug('Received post request')
     recvTime  = int(time.time())
-    self.do_HEAD()
     length    = int(self.headers['Content-Length'])
     post_data = urlparse.parse_qs(self.rfile.read(length).decode('utf-8'))
+
     teamname  = post_data['teamname'][0]
     teampass  = post_data['teampassword'][0]
     problemNo = post_data['problemnumber'][0]
     filename  = post_data['filename'][0]
-    filedata  = b64decode(post_data['filedata'][0])
+
+    try:
+      filedata  = b64decode(post_data['filedata'][0])
+    except Exception as e:
+      logging.info ('Caught exception %s', e)
+      self.do_HEAD()
+      self.wfile.write(FILEDATA_MISSING)
+      return
+
     logging.debug('Post request details :\t' + 
                   'teamname  = %s ;;' + 
                   'teampass  = %s ;;' +
@@ -41,16 +55,31 @@ class BotwarsHandler (BaseHTTPRequestHandler):
       os.makedirs(folder)
     # Create filename using the folder information
     filename = os.path.join(folder, filename)
+
     # Dump data into file
     self.dumpFile(filename, filedata)
-    # TODO : Call evaluation methods
+    
+    score = 0
+    # Judge solution
+    try:
+      score, errors = judge (problemNo, filename)
+    except NoSuchProblemException as e:
+      self.do_HEAD()
+      self.wfile.write(INVALID_PROBLEM)
+      logging.debug(str(e))
+      return      
+    
+    # TODO : Store content of file and details in database.
 
     # Rename file so as to be able to keep older versions.
     os.rename(filename, filename + str(recvTime))
   
-    # TODO : Return evaluation results
-    self.wfile.write("File saved")
-    return 
+    # Return evaluation results
+    self.do_HEAD()
+    self.wfile.write("Score earned for solution : " + str(score))
+    if errors:
+      self.wfile.write("\nErrors\n" + errors)
+    return
 
   def do_GET(self):
   # Handle this as error.
@@ -60,5 +89,3 @@ class BotwarsHandler (BaseHTTPRequestHandler):
     fp = open (filename,'w')
     fp.write(filedata)
     fp.close()
-
-
