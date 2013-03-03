@@ -27,13 +27,14 @@ class BotwarsHandler (BaseHTTPRequestHandler):
     # Extract and print the contents of the POST
     logging.debug('Received post request at '+self.path)
 
-    if self.path=='/submit':
-      recvTime  = int(time.time())
-      length    = int(self.headers['Content-Length'])
-      post_data = urlparse.parse_qs(self.rfile.read(length).decode('utf-8'))
+    recvTime  = int(time.time())
+    length    = int(self.headers['Content-Length'])
+    post_data = urlparse.parse_qs(self.rfile.read(length).decode('utf-8'))
+    teamname  = post_data['teamname'][0]
+    teampass  = post_data['teampassword'][0]
 
-      teamname  = post_data['teamname'][0]
-      teampass  = post_data['teampassword'][0]
+    if self.path=='/submit':
+
       problemNo = post_data['problemnumber'][0]
       filename  = post_data['filename'][0]
 
@@ -51,7 +52,6 @@ class BotwarsHandler (BaseHTTPRequestHandler):
                   'problemNo = %s ;;' + 
                   'filename  = %s ;;', teamname, teampass, problemNo, filename)
 
-      # TODO : Add authentication part
       if not db.authenticate(teamname, teampass):
         self.do_HEAD()
         self.wfile.write(INVALID_AUTHENTICATION)
@@ -81,7 +81,6 @@ class BotwarsHandler (BaseHTTPRequestHandler):
       newfilename = filename + str(recvTime)
       os.rename(filename, newfilename)
   
-      # TODO : Store content of file and details in database.
       db.updateSubmissions(teamname, problemNo, recvTime, newfilename, score, errors)
 
       # Return evaluation results
@@ -93,20 +92,17 @@ class BotwarsHandler (BaseHTTPRequestHandler):
 
     elif self.path == '/leaderboard':
       self.do_HEAD()
-      #TODO: Formatting
       leaderboard = db.getLeaderboard()
       self.wfile.write(leaderboard)
       return
 
     elif self.path == '/score':
-      # TODO : Add authentication part
       if not db.authenticate(teamname, teampass):
         self.do_HEAD()
         self.wfile.write(INVALID_AUTHENTICATION)
         return
 
       self.do_HEAD()
-      #TODO: Formatting
       scores = db.getScores(teamname)
       self.wfile.write(scores)
 
