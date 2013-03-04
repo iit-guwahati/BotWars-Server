@@ -13,7 +13,6 @@
 import subprocess
 import logging
 import os, sys, time
-import codecs
 
 PROBLEMS_DIR = "Problems"
 
@@ -75,8 +74,7 @@ def judge(problemRef, sourceFile):
     pass
   except Exception as e:
     logging.info (str(e))
-    pass
-    
+    raise e 
     
   return score, allErrors
 
@@ -123,7 +121,7 @@ def compilerun(filename, inputfile, memlimit, timelimit):
   if language in compiler:
     compiler[language].append(filename)
     subprocess.call(compiler[language], stderr = ferr)
-    with codecs.open(errfile, encoding='utf-8') as error_file:
+    with open(errfile) as error_file:
       error = error_file.read()
     if not error:
       logging.debug("Compiled %s successfully", filename)
