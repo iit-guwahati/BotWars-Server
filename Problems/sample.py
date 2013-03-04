@@ -18,7 +18,7 @@ testFiles = [("input_sample.txt", "output_sample.txt")]
 MEM_LIM   = 200000000 # bytes
 TIME_LIM  = 5 # seconds
 
-def setup():
+def setup(sourceFile, problemsDir):
   pass
 
 def evaluate(inputData, expectedOutput, producedOutput, sourceFile):

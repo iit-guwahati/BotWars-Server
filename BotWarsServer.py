@@ -12,7 +12,7 @@ def usage():
 
 if __name__=='__main__':
   try:
-    HOST_NAME   = 'localhost'
+    HOST_NAME   = '172.16.25.187'
     PORT_NUMBER = int(sys.argv[1])
   except Exception:
     usage()

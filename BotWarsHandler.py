@@ -107,8 +107,11 @@ class BotwarsHandler (BaseHTTPRequestHandler):
       self.wfile.write(scores)
 
   def do_GET(self):
-  # Handle this as error.
-    pass
+    logging.debug('Received get request at '+self.path)
+    self.do_HEAD()
+    leaderboard = db.getLeaderboard().replace("\n", "<BR />").replace("\t", "    ")
+    self.wfile.write(leaderboard)
+    return
 
   def dumpFile(self, filename, filedata):
     fp = open (filename,'w')

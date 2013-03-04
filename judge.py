@@ -48,8 +48,9 @@ def judge(problemRef, sourceFile):
     raise NoSuchProblemException("Problem " + str(problemRef) + " not defined")
     return
   
+
   # Initial setup
-  prob.setup()
+  prob.setup(sourceFile, os.path.realpath(PROBLEMS_DIR))
 
   score = 0
   allErrors = ""
@@ -127,7 +128,7 @@ def compilerun(filename, inputfile, memlimit, timelimit):
       logging.debug("Compiled %s successfully", filename)
       run =  ['./runner', outFiles[language], '--input=' + inputfile, 
               '--output=' + outputfile, '--mem=' + memlimit, 
-              '--time=' + timelimit]
+              '--time=' + timelimit, '--chroot=.']
       subprocess.call(run, stderr = ferr)
     else:
       logging.debug("Error when compiling %s", filename)
@@ -136,7 +137,7 @@ def compilerun(filename, inputfile, memlimit, timelimit):
   elif language in interpreter:
     run = ['./runner', interpreter[language], filename, '--input=' + inputfile, 
            '--output=' + outputfile, '--mem=' + memlimit, 
-           '--time=' + timelimit]
+           '--time=' + timelimit, '--chroot=.']
     subprocess.call(run, stderr = ferr)
     with open(errfile, 'r') as error_file:
       error = error_file.read()
