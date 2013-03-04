@@ -1,5 +1,6 @@
 from storm.locals import *
 import time
+from dbVars import *
 
 class Team(object):
 	__storm_table__ = "teams"
@@ -25,7 +26,8 @@ class Submission(object):
 	score = Int()
 	errors = Unicode()
 
-db = create_database("mysql://BotWarsAdmin:BotWarsPassword@localhost/BotWarsDb")
+db = create_database("mysql://" + db_user + ":" + db_pass + "@" + db_server + 
+                     "/" + db_name)
 store = Store(db)
 store.execute("CREATE TABLE IF NOT EXISTS `submissions` (\
   `submissionId` int(11) NOT NULL AUTO_INCREMENT,\
