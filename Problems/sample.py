@@ -21,7 +21,7 @@ TIME_LIM  = 5 # seconds
 def setup():
   pass
 
-def evaluate(inputData, expectedOutput, producedOutput):
+def evaluate(inputData, expectedOutput, producedOutput, sourceFile):
   '''
   Function returns a real number (integer or float) as a score. Higher the score,
   better the performance.

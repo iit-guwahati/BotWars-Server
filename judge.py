@@ -65,7 +65,8 @@ def judge(problemRef, sourceFile):
       inputData = open(inFile).read()
       expectedOutput = open(outFile).read()
       if not error:
-        score += prob.evaluate (inputData, expectedOutput, producedOutput)
+        score += prob.evaluate (inputData, expectedOutput, producedOutput, 
+                                sourceFile)
       else:
         allErrors += error + "\n"
   except CompilationError as e:
