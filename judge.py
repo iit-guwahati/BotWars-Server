@@ -48,10 +48,12 @@ def judge(problemRef, sourceFile):
     logging.debug(str(e))
     raise NoSuchProblemException("Problem " + str(problemRef) + " not defined")
     return
+  
+  # Initial setup
+  prob.setup()
 
   score = 0
   allErrors = ""
-  print prob
   # For each input, output pair run the test.
   # TODO : This step calls the compilation of files over and over. Fix this.
   try:

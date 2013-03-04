@@ -18,6 +18,9 @@ testFiles = [("input_sample.txt", "output_sample.txt")]
 MEM_LIM   = 200000000 # bytes
 TIME_LIM  = 5 # seconds
 
+def setup():
+  pass
+
 def evaluate(inputData, expectedOutput, producedOutput):
   '''
   Function returns a real number (integer or float) as a score. Higher the score,
