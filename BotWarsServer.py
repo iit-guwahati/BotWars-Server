@@ -16,7 +16,7 @@ class MultiThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 if __name__=='__main__':
   try:
-    HOST_NAME   = '172.16.25.187'
+    HOST_NAME   = '0.0.0.0'
     PORT_NUMBER = int(sys.argv[1])
   except Exception:
     usage()
