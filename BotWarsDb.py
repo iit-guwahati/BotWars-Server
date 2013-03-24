@@ -2,6 +2,7 @@ from storm.locals import *
 import time
 from dbVars import *
 import logging
+import hashlib
 
 class Team(object):
   __storm_table__ = "teams"
@@ -43,7 +44,7 @@ store.execute("CREATE TABLE IF NOT EXISTS `submissions` (\
 store.execute("CREATE TABLE IF NOT EXISTS `teams` (\
   `teamId` int(11) NOT NULL AUTO_INCREMENT,\
   `teamName` varchar(20) NOT NULL,\
-  `teamPassword` varchar(20) NOT NULL,\
+  `teamPassword` char(40) NOT NULL,\
   `teamEmail` varchar(20) NOT NULL,\
   PRIMARY KEY (`teamId`)\
 )")
@@ -57,6 +58,7 @@ store.execute("CREATE TABLE IF NOT EXISTS `teamscores` (\
 
 def authenticate(teamname, teampassword):
   global store
+  teampassword = hashlib.sha1(teampassword).hexdigest()
   result = store.find(Team, Team.teamName == unicode(teamname))
   if result.count()>0:
     return result.one().teamPassword == teampassword
