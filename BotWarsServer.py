@@ -2,12 +2,16 @@
 # Author : Rajat Khanduja <rajatkhanduja13@gmail.com>
 
 from BotWarsHandler import *
+from SocketServer import ThreadingMixIn
 import sys
 import logging
 import judge
 
 def usage():
   print "Usage : python BotWarsServer.py <port_number>"
+
+class MultiThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+  pass
 
 
 if __name__=='__main__':
@@ -18,7 +22,7 @@ if __name__=='__main__':
     usage()
     exit(0)
   
-  httpd = HTTPServer((HOST_NAME, PORT_NUMBER), BotwarsHandler)
+  httpd = MultiThreadedHTTPServer((HOST_NAME, PORT_NUMBER), BotwarsHandler)
   logging.basicConfig(filename="BotWars.log", level=logging.DEBUG,
                       format='%(asctime)s [%(levelname)s] [%(module)s.%(funcName)s] :: %(message)s',
                       datefmt='%m/%d/%Y %H:%M:%S')
